@@ -100,6 +100,32 @@ toast.promise(promise, {
 });
 ```
 
+You can also render a separate action for the success and error of a promise.
+
+```jsx
+toast.promise(promise, {
+  loading: 'Loading...',
+  success: {
+    resolve: (data) => {
+      return `${data.name} has been added!`;
+    },
+    action: {
+      label: 'Undo',
+      onClick: () => console.log('Undo'),
+    },
+  },
+  error: {
+    resolve: (error) => {
+      return `An Error has occurred! - Code: ${error.code}`;
+    },
+    action: {
+      label: 'View',
+      onClick: () => console.log('View'),
+    },
+  },
+});
+```
+
 ### Custom JSX
 
 You can pass jsx as the first argument instead of a string to render custom jsx while maintaining default styling. You can use the headless version below for a custom, unstyled toast.
