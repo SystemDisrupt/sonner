@@ -436,6 +436,11 @@ html[dir='rtl'],
   color: var(--success-text);
 }
 
+[data-rich-colors='true'] [data-sonner-toast][data-type='success'] [data-action-button] {
+  background: var(--success-text);
+  color: var(--success-bg);
+}
+
 [data-rich-colors='true'] [data-sonner-toast][data-type='error'] {
   background: var(--error-bg);
   border-color: var(--error-border);
@@ -446,6 +451,11 @@ html[dir='rtl'],
   background: var(--error-bg);
   border-color: var(--error-border);
   color: var(--error-text);
+}
+
+[data-rich-colors='true'] [data-sonner-toast][data-type='error'] [data-action-button] {
+  background: var(--error-text);
+  color: var(--error-bg);
 }
 
 .sonner-loading-wrapper {

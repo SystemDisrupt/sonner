@@ -351,6 +351,7 @@ const Toast = (props: ToastProps) => {
           {toast.action ? (
             <button
               data-button=""
+              data-action-button
               onClick={(event) => {
                 toast.action?.onClick(event);
                 if (event.defaultPrevented) return;

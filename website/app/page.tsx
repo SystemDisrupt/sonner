@@ -11,6 +11,7 @@ import { Footer } from '@/src/components/Footer';
 import { Position } from '@/src/components/Position';
 import { Usage } from '@/src/components/Usage';
 import { Other } from '@/src/components/Other/Other';
+import { Promises } from '@/src/components/Promises/Promises';
 
 export default function Home() {
   const [expand, setExpand] = React.useState(false);
@@ -27,6 +28,7 @@ export default function Home() {
           <Installation />
           <Usage />
           <Types />
+          <Promises setRichColors={setRichColors} />
           <Position position={position} setPosition={setPosition} />
           <ExpandModes expand={expand} setExpand={setExpand} />
           <Other setCloseButton={setCloseButton} setRichColors={setRichColors} />

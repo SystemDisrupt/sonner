@@ -4,16 +4,29 @@ export type ToastTypes = 'normal' | 'action' | 'success' | 'error' | 'loading';
 
 export type PromiseT<Data = any> = Promise<Data> | (() => Promise<Data>);
 
+export type PromiseMessage<T> =
+  | React.ReactNode
+  | ((data: T) => React.ReactNode)
+  | {
+      resolve: (data: T) => React.ReactNode;
+      action?: ActionT;
+    };
+
 export type PromiseData<ToastData = any> = ExternalToast & {
-  loading: string | React.ReactNode;
-  success: string | React.ReactNode | ((data: ToastData) => React.ReactNode | string);
-  error: string | React.ReactNode | ((error: any) => React.ReactNode | string);
+  loading: React.ReactNode;
+  success: PromiseMessage<ToastData>;
+  error: PromiseMessage<any>;
   finally?: () => void | Promise<void>;
+};
+
+export type ActionT = {
+  label: string;
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 export interface ToastT {
   id: number | string;
-  title?: string | React.ReactNode;
+  title?: React.ReactNode;
   type?: ToastTypes;
   icon?: React.ReactNode;
   jsx?: React.ReactNode;
@@ -22,10 +35,7 @@ export interface ToastT {
   duration?: number;
   delete?: boolean;
   important?: boolean;
-  action?: {
-    label: string;
-    onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  };
+  action?: ActionT;
   cancel?: {
     label: string;
     onClick?: () => void;

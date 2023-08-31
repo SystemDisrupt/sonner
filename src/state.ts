@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalToast, ToastT, PromiseData, PromiseT, ToastToDismiss, ToastTypes } from './types';
+import { ExternalToast, ToastT, PromiseData, PromiseT, ToastToDismiss, ToastTypes, PromiseMessage } from './types';
 
 let toastsCounter = 0;
 
@@ -31,7 +31,7 @@ class Observer {
     this.toasts = [...this.toasts, data];
   };
 
-  create = (data: ExternalToast & { message?: string | React.ReactNode; type?: ToastTypes }) => {
+  create = (data: ExternalToast & { message?: React.ReactNode; type?: ToastTypes }) => {
     const { message, ...rest } = data;
     const id = typeof data?.id === 'number' || data.id?.length > 0 ? data.id : toastsCounter++;
     const alreadyExists = this.toasts.find((toast) => {
@@ -85,12 +85,14 @@ class Observer {
     const id = this.create({ ...data, promise, type: 'loading', message: data.loading });
     const p = promise instanceof Promise ? promise : promise();
     p.then((promiseData) => {
-      const message = typeof data.success === 'function' ? data.success(promiseData) : data.success;
-      this.create({ id, type: 'success', message });
+      const message = this.resolveMessage(data.success, promiseData);
+      const action = this.getAction(data.success);
+      this.create({ id, type: 'success', message, action });
     })
       .catch((error) => {
-        const message = typeof data.error === 'function' ? data.error(error) : data.error;
-        this.create({ id, type: 'error', message });
+        const message = this.resolveMessage(data.error, error);
+        const action = this.getAction(data.error);
+        this.create({ id, type: 'error', message, action });
       })
       .finally(data.finally);
     return id;
@@ -100,6 +102,20 @@ class Observer {
   custom = (jsx: (id: number | string) => React.ReactElement, data?: ExternalToast) => {
     const id = data?.id || toastsCounter++;
     this.publish({ jsx: jsx(id), id, ...data });
+  };
+
+  private resolveMessage = (message: PromiseMessage<any>, data: any) => {
+    if (typeof message === 'function') {
+      return message(data);
+    }
+    if (typeof message === 'object' && 'resolve' in message) {
+      return message.resolve(data);
+    }
+    return message;
+  };
+
+  private getAction = (message: PromiseMessage<any>) => {
+    return typeof message === 'object' && 'action' in message ? message.action : undefined;
   };
 }
 
